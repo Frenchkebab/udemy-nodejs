@@ -32,26 +32,53 @@ console.log('Will read file!');
 // ! SERVER
 
 // * code out here is only executed 'once' when we run the program
+const replaceTemplate = (temp, product) => {
+  let output = temp.replace(/{%PRODUCTNAME%}/g, product.productName); // regular expression : replace all {%PRODUCTNAME%}
+  output = output.replace(/{%IMAGE%}/g, product.image);
+  output = output.replace(/{%PRICE%}/g, product.price);
+  output = output.replace(/{%FROM%}/g, product.nutrients);
+  output = output.replace(/{%QUANTITY%}/g, product.quantity);
+  output = output.replace(/{%DESCRIPTION%}/g, product.description);
+  output = output.replace(/{%ID%}/g, product.id);
+
+  if (!product.organic) output = output.replace(/{%NOT_ORGANIC%}/g, 'not-organice');
+  return output;
+};
 
 // stored this to variable 'data' so you don't have to read it each time you redirect '/api'
+const tempOverview = fs.readFileSync(`${__dirname}/templates/template-overview.html`, 'utf-8');
+const tempCard = fs.readFileSync(`${__dirname}/templates/template-card.html`, 'utf-8');
+const tempProduct = fs.readFileSync(`${__dirname}/templates/template-product.html`, 'utf-8');
+
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8');
-const dataObj = JSON.parse(data);
+const dataObj = JSON.parse(data); // all the parsed data in data.json are in here
 
 // * code below gets executed each time when there is new request
 const server = http.createServer((req, res) => {
   // console.log(req.url);
   const pathName = req.url;
 
+  // Overview page
   if (pathName === '/' || pathName === '/overview') {
-    res.end('This is the OVERVIEW');
+    res.writeHead(200, { 'Content-type': 'text/html' });
+
+    const cardsHtml = dataObj.map((el) => replaceTemplate(tempCard, el));
+    const output = tempOverview.replace('{%PRODUCT_CARDS%}', cardsHtml);
+    res.end(output);
+
+    // Product page
   } else if (pathName === '/product') {
     res.end('This is the PRODUCT!');
+
+    // API
   } else if (pathName === '/api') {
     // fs.readFile(`${__dirname}/dev-data/data.json`, 'utf-8', (err, data) => {
     // const productData = JSON.parse(data);
     res.writeHead(200, { 'Content-type': 'application/json' });
     res.end(data);
     // });
+
+    // Not found
   } else {
     // ! status code must be sent before content
     res.writeHead(404, {
