@@ -55,11 +55,12 @@ const dataObj = JSON.parse(data); // all the parsed data in data.json are in her
 
 // * code below gets executed each time when there is new request
 const server = http.createServer((req, res) => {
-  // console.log(req.url);
-  const pathName = req.url;
+  const { query, pathname } = url.parse(req.url, true);
+  // const pathName = console.log(req.url); // ex: /product?id=0
+  // while pathname) ex: /product
 
   // Overview page
-  if (pathName === '/' || pathName === '/overview') {
+  if (pathname === '/' || pathname === '/overview') {
     res.writeHead(200, { 'Content-type': 'text/html' });
 
     const cardsHtml = dataObj.map((el) => replaceTemplate(tempCard, el));
@@ -67,11 +68,13 @@ const server = http.createServer((req, res) => {
     res.end(output);
 
     // Product page
-  } else if (pathName === '/product') {
-    res.end('This is the PRODUCT!');
+  } else if (pathname === '/product') {
+    const product = dataObj[query.id];
+    const output = replaceTemplate(tempProduct, product);
+    res.end(output);
 
     // API
-  } else if (pathName === '/api') {
+  } else if (pathname === '/api') {
     // fs.readFile(`${__dirname}/dev-data/data.json`, 'utf-8', (err, data) => {
     // const productData = JSON.parse(data);
     res.writeHead(200, { 'Content-type': 'application/json' });
