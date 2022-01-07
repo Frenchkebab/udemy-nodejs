@@ -9,6 +9,6 @@
   "author": "Junghyun Choi",
   "license": "ISC",
   "dependencies": {
-    "slugify": "^1.6.5"
+    "slugify": "^1.0.0"
   }
 }
