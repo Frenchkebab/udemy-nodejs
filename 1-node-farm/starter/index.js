@@ -36,9 +36,18 @@ console.log('Will read file!');
 // * code out here is only executed 'once' when we run the program
 
 // stored this to variable 'data' so you don't have to read it each time you redirect '/api'
-const tempOverview = fs.readFileSync(`${__dirname}/templates/template-overview.html`, 'utf-8');
-const tempCard = fs.readFileSync(`${__dirname}/templates/template-card.html`, 'utf-8');
-const tempProduct = fs.readFileSync(`${__dirname}/templates/template-product.html`, 'utf-8');
+const tempOverview = fs.readFileSync(
+  `${__dirname}/templates/template-overview.html`,
+  'utf-8'
+);
+const tempCard = fs.readFileSync(
+  `${__dirname}/templates/template-card.html`,
+  'utf-8'
+);
+const tempProduct = fs.readFileSync(
+  `${__dirname}/templates/template-product.html`,
+  'utf-8'
+);
 
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, 'utf-8');
 const dataObj = JSON.parse(data); // all the parsed data in data.json are in here
@@ -79,7 +88,7 @@ const server = http.createServer((req, res) => {
     // ! status code must be sent before content
     res.writeHead(404, {
       'Content-type': 'text/html',
-      'my-own-header': 'hello-world' // you can check this in 'Response Headers'
+      'my-own-header': 'hello-world', // you can check this in 'Response Headers'
     });
     res.end('<h1>Page not found!</h1>');
   }
