@@ -7,6 +7,8 @@ const superagent = require('superagent');
  * but then returns a promise so that we can use promise
  * so that we can use the promise instead of the callback funciton
  */
+
+//! Promise
 const readFilePro = (file) => {
   return new Promise((resolve, reject) => {
     fs.readFile(file, (err, data) => {
@@ -20,6 +22,7 @@ const readFilePro = (file) => {
   });
 };
 
+//! Promise
 const writeFilePro = (file, data) => {
   return new Promise((resolve, reject) => {
     fs.writeFile(file, data, (err) => {
@@ -29,15 +32,15 @@ const writeFilePro = (file, data) => {
   });
 };
 
-// ! async function
+//! async function
 const getDogPic = async () => {
   /*
-   * Will stop the code from running at this point until this Promise is resolved
+   * Will stop the code from running at this point(await) until this Promise is resolved
    * resolved value will be substituted into the variable 'data'
    * This makes the code look more like syncrhonous code
    */
   try {
-    const data = await readFilePro(`${__dirname}/dog.txt`);
+    const data = await readFilePro(`${__dirname}/dog.txt`); //* Resolved value will be stored here
     console.log(`Breed: ${data}`);
 
     const res1Pro = superagent.get(
@@ -50,8 +53,8 @@ const getDogPic = async () => {
       `https://dog.ceo/api/breed/${data}/images/random`
     );
 
-    const all = await Promise.all([res1Pro, res2Pro, res3Pro]);
-    const imgs = all.map((el) => el.body.message);
+    const all = await Promise.all([res1Pro, res2Pro, res3Pro]); //* wait for all those three Promises to be resolved
+    const imgs = all.map((el) => el.body.message); //* all has an array of all resolved values
     console.log(imgs);
 
     await writeFilePro('dog-img.txt', imgs.join('\n'));
