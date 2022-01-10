@@ -29,6 +29,7 @@ const writeFilePro = (file, data) => {
   });
 };
 
+// ! async function
 const getDogPic = async () => {
   /*
    * Will stop the code from running at this point until this Promise is resolved
@@ -45,10 +46,42 @@ const getDogPic = async () => {
     console.log(res.body.message);
   } catch (err) {
     console.log(err);
+    throw err; // ! If you throw an error, that will then mark the entire Promise as rejeceted
   }
+  return '2: READY!';
 };
 
-getDogPic();
+//* IIFE
+(async () => {
+  try {
+    console.log('1: Will get dog pics!');
+    // const data = await readFilePro(`${__dirname}/dog.txt`);
+    // const res = await superagent.get(
+    //   `https://dog.ceo/api/breed/${data}/images/random`
+    // );
+    const x = await getDogPic();
+    console.log(x);
+    console.log('3: Done getting dog pics!');
+  } catch (err) {
+    console.log('Error!!');
+  }
+})();
+
+// console.log('1: Will get dog pics!');
+// getDogPic()
+//   .then((x) => {
+//     console.log(x);
+//     console.log('3: Done getting dog pics!');
+//   })
+//   .catch((err) => {
+//     /*
+//      * The promise function above comming from the Async function
+//      * will still be marked as successful
+//      * If you want to mark it as rejected,
+//      * then you should 'throw' an error
+//      */
+//     console.log('Error !!!');
+//   }); //* the async function runs in the 'background'
 
 /* 
 readFilePro(`${__dirname}/dog.txt`) //* if you put value in variable 'file' then this will return a Promise
