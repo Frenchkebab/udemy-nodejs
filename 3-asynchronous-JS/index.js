@@ -29,14 +29,36 @@ const writeFilePro = (file, data) => {
   });
 };
 
-readFilePro(`${__dirname}/dog.txt`) // if you put value in variable 'file' then this will return a Promise
+const getDogPic = async () => {
+  /*
+   * Will stop the code from running at this point until this Promise is resolved
+   * resolved value will be substituted into the variable 'data'
+   * This makes the code look more like syncrhonous code
+   */
+  try {
+    const data = await readFilePro(`${__dirname}/dog.txt`);
+    console.log(`Breed: ${data}`);
+
+    const res = await superagent.get(
+      `https://dog.ceo/api/breed/${data}/images/random`
+    );
+    console.log(res.body.message);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+getDogPic();
+
+/* 
+readFilePro(`${__dirname}/dog.txt`) //* if you put value in variable 'file' then this will return a Promise
   .then((data) => {
     console.log(`Breed: ${data}`);
-    return superagent.get(`https://dog.ceo/api/breed/${data}/images/random`); // this code will return a Promise
+    return superagent.get(`https://dog.ceo/api/breed/${data}/images/random`); //* this code will return a Promise
   }) //* HTTP get request
   .then((res) => {
     console.log(res.body.message);
-    return writeFilePro('dog-img.txt', res.body.message); // this code wil return a Promise
+    return writeFilePro('dog-img.txt', res.body.message); //* this code wil return a Promise
     // fs.writeFile('dog-img.txt', res.body.message, (err) => {
     //   console.log('Random dog image saved to file!');
     // });
@@ -47,3 +69,4 @@ readFilePro(`${__dirname}/dog.txt`) // if you put value in variable 'file' then 
   .catch((err) => {
     console.log(err);
   });
+ */
