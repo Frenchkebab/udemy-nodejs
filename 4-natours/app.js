@@ -1,6 +1,7 @@
 const fs = require('fs');
 const express = require('express');
 const res = require('express/lib/response');
+const { create } = require('domain');
 
 const app = express();
 
@@ -33,23 +34,17 @@ const tours = JSON.parse(
    */
 );
 
-/*
- * In case you want to do some changes to your API,
- * you just can do it simply on v2
- *  without breaking everyone who is still using V1
- */
-//* route handler
-app.get('/api/v1/tours', (req, res) => {
+const getAllTours = (req, res) => {
   res.status(200).json({
     status: 'success',
     results: tours.length,
     data: {
-      tours, // tours: tours
+      tours,
     },
   });
-});
+};
 
-app.get('/api/v1/tours/:id', (req, res) => {
+const getTour = (req, res) => {
   console.log(req.params); //* variables defined in URL
 
   const id = req.params.id * 1; //* automatically converted into a number
@@ -73,9 +68,9 @@ app.get('/api/v1/tours/:id', (req, res) => {
       tour,
     },
   });
-});
+};
 
-app.post('/api/v1/tours', (req, res) => {
+const createTour = (req, res) => {
   // console.log(req.body); //* body will be available because we use Middleware
 
   const newId = tours[tours.length - 1].id + 1;
@@ -100,9 +95,9 @@ app.post('/api/v1/tours', (req, res) => {
       });
     }
   );
-});
+};
 
-app.patch('/api/v1/tours/:id', (req, res) => {
+const updateTour = (req, res) => {
   if (req.params.id * 1 > tours.length) {
     // if (!tour) {
     return res.status(404).json({
@@ -117,9 +112,9 @@ app.patch('/api/v1/tours/:id', (req, res) => {
       tour: '<Updated tour here...>',
     },
   });
-});
+};
 
-app.delete('/api/v1/tours/:id', (req, res) => {
+const deleteTour = (req, res) => {
   if (req.params.id * 1 > tours.length) {
     // if (!tour) {
     return res.status(404).json({
@@ -133,7 +128,27 @@ app.delete('/api/v1/tours/:id', (req, res) => {
     status: 'success',
     data: null,
   });
-});
+};
+
+/*
+ * In case you want to do some changes to your API,
+ * you just can do it simply on v2
+ *  without breaking everyone who is still using V1
+ */
+//* route handler
+/* app.get('/api/v1/tours', getAllTours);
+app.post('/api/v1/tours', createTour); */
+app.route('/api/v1/tours').get(getAllTours).post(createTour);
+
+/* app.get('/api/v1/tours/:id', getTour);
+app.patch('/api/v1/tours/:id', updateTour);
+app.delete('/api/v1/tours/:id', deleteTour);
+ */
+app
+  .route('/api/v1/tours/:id')
+  .get(getAllTours)
+  .patch(updateTour)
+  .delete(deleteTour);
 
 const port = 3000;
 app.listen(port, () => {
