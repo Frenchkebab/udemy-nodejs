@@ -27,6 +27,21 @@ app.post('/', (req, res) => {
   res.send('You can post to this endpoint...');
 }); */
 
+//! this Middleware here are applied to each and every single request!
+//! Because we did not sepecified a certain route
+app.use((req, res, next) => {
+  //* express knows that we are defining a Middleware here
+  console.log('Hello from the middleware !!');
+  //! if you do not call the 'next' function
+  //! then the req/res cycle will be stuck here
+  next();
+});
+
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
+
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`) //* only read at the beginning of the server
   /*
@@ -35,8 +50,10 @@ const tours = JSON.parse(
 );
 
 const getAllTours = (req, res) => {
+  console.log(req.requestTime);
   res.status(200).json({
     status: 'success',
+    requestedat: req.requestTime,
     results: tours.length,
     data: {
       tours,
