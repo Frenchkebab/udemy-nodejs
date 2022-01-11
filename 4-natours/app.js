@@ -33,6 +33,11 @@ const tours = JSON.parse(
    */
 );
 
+/*
+ * In case you want to do some changes to your API,
+ * you just can do it simply on v2
+ *  without breaking everyone who is still using V1
+ */
 //* route handler
 app.get('/api/v1/tours', (req, res) => {
   res.status(200).json({
@@ -53,7 +58,7 @@ app.get('/api/v1/tours/:id', (req, res) => {
   // if (id > tours.length) {
   if (!tour) {
     return res.status(404).json({
-      statis: 'fail',
+      status: 'fail',
       message: 'Invalid ID',
     });
   }
@@ -97,11 +102,22 @@ app.post('/api/v1/tours', (req, res) => {
   );
 });
 
-/*
- * In case you want to do some changes to your API,
- * you just can do it simply on v2
- *  without breaking everyone who is still using V1
- */
+app.patch('/api/v1/tours/:id', (req, res) => {
+  if (req.params.id * 1 > tours.length) {
+    // if (!tour) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      tour: '<Updated tour here...>',
+    },
+  });
+});
 
 const port = 3000;
 app.listen(port, () => {
