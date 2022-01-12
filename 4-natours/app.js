@@ -1,16 +1,17 @@
 const fs = require('fs');
 const express = require('express');
-const res = require('express/lib/response');
-const { create } = require('domain');
+const morgan = require('morgan');
 
 const app = express();
 
+//! 1) MIDDLEWARES
 /*
  * Middleware is a function that can modify the incomming request data.
  * It is called 'Middle'ware because it stands between req and res
  * It's a step that the request goes through while it's being processed.
  * And as the req goes through, the data from the body is added to the req object using middleware.
  */
+app.use(morgan('dev'));
 app.use(express.json()); //* Middleware
 /* app.get('/', (req, res) => {
   // res.status(200).send('Hello from the server side!');
@@ -49,6 +50,7 @@ const tours = JSON.parse(
    */
 );
 
+//! 2) ROUTE HANDLERS
 const getAllTours = (req, res) => {
   console.log(req.requestTime);
   res.status(200).json({
@@ -147,6 +149,7 @@ const deleteTour = (req, res) => {
   });
 };
 
+//! 3) ROUTES
 /*
  * In case you want to do some changes to your API,
  * you just can do it simply on v2
@@ -167,6 +170,7 @@ app
   .patch(updateTour)
   .delete(deleteTour);
 
+//! 4) START THE SERVER
 const port = 3000;
 app.listen(port, () => {
   //* A callback function that will be called as soon as the server starts listening
