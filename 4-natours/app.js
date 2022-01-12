@@ -187,6 +187,9 @@ const deleteUser = (req, res) => {
 app.route('/api/v1/users').get(getAllUsers);
 
 //! 3) ROUTES
+const tourRouter = express.Router(); //* actually a middleware
+const userRouter = express.Router();
+
 /*
  * In case you want to do some changes to your API,
  * you just can do it simply on v2
@@ -195,25 +198,20 @@ app.route('/api/v1/users').get(getAllUsers);
 //* route handler
 /* app.get('/api/v1/tours', getAllTours);
 app.post('/api/v1/tours', createTour); */
-app.route('/api/v1/tours').get(getAllTours).post(createTour);
+tourRouter.route('/').get(getAllTours).post(createTour);
 
 /* app.get('/api/v1/tours/:id', getTour);
 app.patch('/api/v1/tours/:id', updateTour);
 app.delete('/api/v1/tours/:id', deleteTour);
  */
-app
-  .route('/api/v1/tours/:id')
-  .get(getAllTours)
-  .patch(updateTour)
-  .delete(deleteTour);
+tourRouter.route('/:id').get(getAllTours).patch(updateTour).delete(deleteTour);
 
-app.route('/api/v1/users').get(getAllUsers).post(createUser);
+userRouter.route('/').get(getAllUsers).post(createUser);
 
-app
-  .route('/api/v1/users/:id')
-  .get(getUser)
-  .patch(updateUser)
-  .delete(deleteUser);
+userRouter.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
+
+app.use('/api/v1/tours', tourRouter); //! mounting a new router on a route
+app.use('/api/v1/users', userRouter);
 
 //! 4) START THE SERVER
 const port = 3000;
