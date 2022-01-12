@@ -33,9 +33,8 @@ app.use((req, res, next) => {
 app.use('/api/v1/tours', tourRouter); //* mounting a new router on a route
 app.use('/api/v1/users', userRouter);
 
-//! 4) START THE SERVER
-const port = 3000;
-app.listen(port, () => {
-  //* A callback function that will be called as soon as the server starts listening
-  console.log(`App running on portr ${port}...`);
-});
+module.exports = app;
+/* 
+  We have everything that is basically the application configuration
+  in one standalone file.
+*/
